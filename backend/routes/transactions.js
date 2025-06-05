@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Transaction = require('../models/Transaction');
 
-// GET: Fetch all transactions sorted by most recent
 router.get('/', async (req, res) => {
   try {
     const transactions = await Transaction.find().sort({ date: -1 });
@@ -13,7 +12,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST: Create a new transaction
 router.post('/', async (req, res) => {
   const { amount, category, type, date, description } = req.body;
 
@@ -38,7 +36,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// DELETE: Remove a transaction by ID
 router.delete('/:id', async (req, res) => {
   try {
     const deleted = await Transaction.findByIdAndDelete(req.params.id);
@@ -50,7 +47,6 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// PUT: Update a transaction by ID
 router.put('/:id', async (req, res) => {
   const { amount, category, type, date, description } = req.body;
 
