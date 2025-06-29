@@ -52,7 +52,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       {/* ✅ Clean Header */}
       <View style={styles.headerRow}>
-        <View style={{ width: 25 }} /> {/* placeholder for spacing */}
+        <View style={{ width: 25 }} />
         <Text style={styles.headerTitle}>Home</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
           <View>
@@ -103,7 +103,7 @@ export default function HomeScreen() {
         )}
       />
 
-      {/* Footer Navigation Bar */}
+      {/* ✅ Footer Navigation Bar */}
       <View style={styles.footerNav}>
         <TouchableOpacity>
           <Icon name="home" size={24} color="#555" />
@@ -119,9 +119,11 @@ export default function HomeScreen() {
           <Icon name="add" size={28} color="#fff" />
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        {/* ✅ Added Wallet Navigation */}
+        <TouchableOpacity onPress={() => navigation.navigate('Wallet')}>
           <Icon name="wallet-outline" size={24} color="#555" />
         </TouchableOpacity>
+
         <TouchableOpacity>
           <Icon name="person-outline" size={24} color="#555" />
         </TouchableOpacity>
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f3f0ff',
     padding: 20,
-    paddingTop: 65, // 👈 added top padding to replace header space
+    paddingTop: 65,
   },
   headerRow: {
     flexDirection: 'row',
@@ -143,7 +145,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#000', textAlign: 'center' },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
+  },
   redDot: {
     width: 10,
     height: 10,
