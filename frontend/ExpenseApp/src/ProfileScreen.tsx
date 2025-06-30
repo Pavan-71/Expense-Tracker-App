@@ -1,22 +1,24 @@
 // 📄 File: src/ProfileScreen.tsx
 
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import { AuthContext } from './context/AuthContext';
 
 const ProfileScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { user, logout } = useContext(AuthContext);
 
-  const user = {
-    name: 'Pavan Saketh',
-    email: 'Pavansaketh4003@gmail.com',
-    phone: '+91 9959509609',
-    isAdmin: true,
+  const accountType = user?.isAdmin ? 'ADMIN' : 'USER';
+
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Logout', style: 'destructive', onPress: logout },
+    ]);
   };
-
-  const accountType = user.isAdmin ? 'ADMIN' : 'USER';
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -24,9 +26,9 @@ const ProfileScreen = () => {
         source={require('../assets/profile-placeholder.png')}
         style={styles.avatar}
       />
-      <Text style={styles.name}>{user.name}</Text>
-      <Text style={styles.email}>{user.email}</Text>
-      <Text style={styles.info}>{user.phone}</Text>
+      <Text style={styles.name}>{user?.username}</Text>
+      <Text style={styles.email}>{user?.email}</Text>
+      <Text style={styles.info}>{user?.phone || 'Phone not available'}</Text>
       <Text style={styles.info}>Account Type: {accountType}</Text>
 
       <View style={styles.divider} />
@@ -41,12 +43,13 @@ const ProfileScreen = () => {
         <Text style={styles.optionText}>🔐 Privacy Policy</Text>
       </TouchableOpacity>
 
-      <View style={styles.divider} />
+      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Settings')}>
+        <Text style={styles.optionText}>⚙️ Settings</Text>
+      </TouchableOpacity>
 
-      <Text style={styles.settingsTitle}>Settings</Text>
-      <Text style={styles.label}>• Edit profile (coming soon)</Text>
-      <Text style={styles.label}>• Change phone number</Text>
-      <Text style={styles.label}>• Update email</Text>
+      <TouchableOpacity style={[styles.option, { backgroundColor: '#fee2e2' }]} onPress={handleLogout}>
+        <Text style={[styles.optionText, { color: '#b91c1c' }]}>🚪 Logout</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };

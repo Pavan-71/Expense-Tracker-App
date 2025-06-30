@@ -1,3 +1,5 @@
+// 📄 File: src/SideBarWrapper.tsx
+
 import React, { useRef, useState } from 'react';
 import {
   View,
@@ -10,10 +12,10 @@ import {
   Pressable,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App'; // adjust path if needed
-import { Transaction } from './types'; // adjust path if needed
+import { RootStackParamList } from '../App';
+import { Transaction } from './types';
 
 type SideBarWrapperProps = {
   children: React.ReactNode;
@@ -29,6 +31,7 @@ const SidebarWrapper = ({
   transactions,
 }: SideBarWrapperProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute();
   const slideAnim = useRef(new Animated.Value(-250)).current;
   const [visible, setVisible] = useState(false);
 
@@ -58,6 +61,8 @@ const SidebarWrapper = ({
     closeSidebar();
   };
 
+  const currentRoute = route.name;
+
   return (
     <View style={{ flex: 1 }}>
       {/* Top Bar */}
@@ -66,7 +71,7 @@ const SidebarWrapper = ({
           <TouchableOpacity onPress={toggleSidebar}>
             <Text style={styles.hamburger}>☰</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Home</Text>
+          <Text style={styles.header}>{currentRoute}</Text>
           <TouchableOpacity onPress={onNotificationPress}>
             <View>
               <Icon name="notifications-outline" size={24} color="#555" />
@@ -76,37 +81,48 @@ const SidebarWrapper = ({
         </View>
       </SafeAreaView>
 
-      {/* Overlay */}
       {visible && <Pressable style={styles.overlay} onPress={closeSidebar} />}
 
       {/* Sidebar */}
       <Animated.View style={[styles.sidebar, { left: slideAnim }]}>
+        <TouchableOpacity onPress={() => handleNavigate('Profile')}>
+          <Text style={[styles.menuItem]}>
+            👤 Profile
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => handleNavigate('Home')}>
-          <Text style={styles.menuItem}>🏠 Home</Text>
+          <Text style={[styles.menuItem]}>
+            🏠 Home
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleNavigate('Overview')}>
-          <Text style={styles.menuItem}>📊 Dashboard</Text>
+          <Text style={[styles.menuItem]}>
+            📊 Dashboard
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleNavigate('Wallet')}>
-          <Text style={styles.menuItem}>💰 Wallet</Text>
+          <Text style={[styles.menuItem]}>
+            💰 Wallet
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleNavigate('Logs')}>
-          <Text style={styles.menuItem}>📄 Logs</Text>
+          <Text style={[styles.menuItem]}>
+            📄 Logs
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleNavigate('Notification')}>
-          <Text style={styles.menuItem}>💡 Tips</Text>
+          <Text style={[styles.menuItem]}>
+            💡 Tips
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleNavigate('About')}>
-          <Text style={styles.menuItem}>ℹ️ About</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {
-          // TODO: Handle theme toggle here
-        }}>
-          <Text style={styles.menuItem}>🌙 Dark Mode</Text>
+          <Text style={[styles.menuItem]}>
+            ℹ️ About
+          </Text>
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Screen Content */}
+      {/* Main Content */}
       <View style={{ flex: 1 }}>{children}</View>
     </View>
   );

@@ -14,12 +14,20 @@ mongoose.connect(mongoURI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch((err) => console.error('❌ MongoDB connection error:', err));
 
+// ✅ ROUTES
 const transactionsRouter = require('./routes/transactions');
-app.use('/api/transactions', transactionsRouter);
+const authRouter = require('./routes/auth');
+const userRouter = require('./routes/users');  // <-- Add this line
 
+app.use('/api/transactions', transactionsRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);  // <-- Mount the user routes here
+
+// Default route
 app.get('/', (req, res) => {
   res.send('🚀 Expense Tracker Backend is running!');
 });
 
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🔊 Server started on port ${PORT} Successfully!`));

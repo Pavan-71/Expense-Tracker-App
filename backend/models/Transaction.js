@@ -9,7 +9,7 @@ const transactionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  type: {  
+  type: {
     type: String,
     enum: ['income', 'expense'],
     required: true,
@@ -21,6 +21,11 @@ const transactionSchema = new mongoose.Schema({
   description: {
     type: String,
     default: '',
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true, // ✅ Required for linking to user
   },
 });
 

@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Transaction = require('../models/Transaction');
+const protect = require('../middleware/authMiddleware');
 
-router.get('/', async (req, res) => {
+// 🔐 GET user’s transactions
+router.get('/', protect, async (req, res) => {
   try {
-    const transactions = await Transaction.find().sort({ date: -1 });
+    const transactions = await Transaction.find({ user: req.user.id }).sort({ date: -1 });
     res.json(transactions);
   } catch (err) {
     console.error('Error fetching transactions:', err.message);
@@ -12,7 +14,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+// 🔐 ADD transaction
+router.post('/', protect, async (req, res) => {
   const { amount, category, type, date, description } = req.body;
 
   if (!amount || !category || !type) {
@@ -25,6 +28,7 @@ router.post('/', async (req, res) => {
     type,
     date: date || Date.now(),
     description: description || '',
+    user: req.user.id, // ✅ Link to user
   });
 
   try {
@@ -36,9 +40,14 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+// 🔐 DELETE
+router.delete('/:id', protect, async (req, res) => {
   try {
-    const deleted = await Transaction.findByIdAndDelete(req.params.id);
+    const deleted = await Transaction.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id, // ✅ Only allow user's own
+    });
+
     if (!deleted) return res.status(404).json({ message: 'Transaction not found' });
     res.json({ message: 'Transaction deleted successfully' });
   } catch (err) {
@@ -47,12 +56,13 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+// 🔐 UPDATE
+router.put('/:id', protect, async (req, res) => {
   const { amount, category, type, date, description } = req.body;
 
   try {
-    const updated = await Transaction.findByIdAndUpdate(
-      req.params.id,
+    const updated = await Transaction.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id }, // ✅ Must belong to user
       { amount, category, type, date, description },
       { new: true, runValidators: true }
     );

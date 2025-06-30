@@ -1,3 +1,5 @@
+// 📄 File: src/types.ts
+
 export type Transaction = {
   _id?: string;
   title: string;
@@ -13,4 +15,13 @@ export type Notification = {
   title: string;
   content: string;
   read: boolean;
+};
+
+// ✅ Add and export User type
+export type User = {
+  id: string;
+  username: string;
+  email: string;
+  phone: string;
+  isAdmin: boolean;
 };
