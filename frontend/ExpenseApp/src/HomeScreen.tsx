@@ -1,3 +1,5 @@
+// 📄 File: HomeScreen.tsx
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -116,7 +118,8 @@ export default function HomeScreen() {
             <Icon name="wallet-outline" size={24} color="#555" />
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          {/* ✅ Profile Icon navigation added */}
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
             <Icon name="person-outline" size={24} color="#555" />
           </TouchableOpacity>
         </View>
