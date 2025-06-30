@@ -1,4 +1,3 @@
-// 📄 File: src/HomeScreen.tsx
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -17,6 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../App';
+import SideBarWrapper from './SideBarWrapper'; 
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -49,86 +49,78 @@ export default function HomeScreen() {
   const balance = income - expense;
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* ✅ Clean Header */}
-      <View style={styles.headerRow}>
-        <View style={{ width: 25 }} />
-        <Text style={styles.headerTitle}>Home</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
-          <View>
-            <Icon name="notifications-outline" size={24} color="#333" />
-            {hasUnreadTips && <View style={styles.redDot} />}
-          </View>
-        </TouchableOpacity>
-      </View>
-
-      {/* Balance Summary Card */}
-      <LinearGradient
-        colors={["#ff9a9e", "#fad0c4"]}
-        style={styles.balanceCard}
-      >
-        <Text style={styles.balanceLabel}>
-          Your Balance <Icon name="chevron-down" size={18} />
-        </Text>
-        <Text style={styles.balanceAmount}>₹ {balance}</Text>
-
-        <View style={styles.rowBetween}>
-          <Text style={[styles.incomeExpense, { color: '#4caf50' }]}>Income: ₹{income}</Text>
-          <Text style={[styles.incomeExpense, { color: '#f44336' }]}>Expense: ₹{expense}</Text>
-        </View>
-      </LinearGradient>
-
-      {/* Transaction List */}
-      <Text style={styles.sectionTitle}>Transactions</Text>
-      <FlatList
-        data={transactions}
-        keyExtractor={item => item._id || Math.random().toString()}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}
-        renderItem={({ item }) => (
-          <View style={styles.transactionCard}>
-            <View>
-              <Text style={styles.category}>{item.category}</Text>
-              <Text style={{ color: '#666' }}>{new Date(item.date).toLocaleDateString()}</Text>
-            </View>
-            <Text
-              style={{
-                color: item.type === 'income' ? '#4caf50' : '#f44336',
-                fontWeight: 'bold',
-              }}
-            >
-              {item.type === 'income' ? '+' : '-'}₹{item.amount}
-            </Text>
-          </View>
-        )}
-      />
-
-      {/* ✅ Footer Navigation Bar */}
-      <View style={styles.footerNav}>
-        <TouchableOpacity>
-          <Icon name="home" size={24} color="#555" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Overview', { transactions })}>
-          <Icon name="bar-chart-outline" size={24} color="#555" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.plusIconWrapper}
-          onPress={() => navigation.navigate('AddTransaction')}
+    <SideBarWrapper
+      notificationDot={hasUnreadTips}
+      onNotificationPress={() => navigation.navigate('Notification')}
+    >
+      <SafeAreaView style={styles.container}>
+        {/* Balance Summary Card */}
+        <LinearGradient
+          colors={["#b18aff", "#e6d4ff"]}
+          style={styles.balanceCard}
         >
-          <Icon name="add" size={28} color="#fff" />
-        </TouchableOpacity>
+          <Text style={styles.balanceLabel}>
+            Your Balance <Icon name="chevron-down" size={18} />
+          </Text>
+          <Text style={styles.balanceAmount}>₹ {balance}</Text>
 
-        {/* ✅ Added Wallet Navigation */}
-        <TouchableOpacity onPress={() => navigation.navigate('Wallet')}>
-          <Icon name="wallet-outline" size={24} color="#555" />
-        </TouchableOpacity>
+          <View style={styles.rowBetween}>
+            <Text style={[styles.incomeExpense, { color: '#2c2c2c' }]}>Income: ₹{income}</Text>
+            <Text style={[styles.incomeExpense, { color: '#2c2c2c' }]}>Expense: ₹{expense}</Text>
+          </View>
+        </LinearGradient>
 
-        <TouchableOpacity>
-          <Icon name="person-outline" size={24} color="#555" />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+        {/* Transaction List */}
+        <Text style={styles.sectionTitle}>Transactions</Text>
+        <FlatList
+          data={transactions}
+          keyExtractor={item => item._id || Math.random().toString()}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 120 }}
+          renderItem={({ item }) => (
+            <View style={styles.transactionCard}>
+              <View>
+                <Text style={styles.category}>{item.category}</Text>
+                <Text style={{ color: '#666' }}>{new Date(item.date).toLocaleDateString()}</Text>
+              </View>
+              <Text
+                style={{
+                  color: item.type === 'income' ? '#4caf50' : '#f44336',
+                  fontWeight: 'bold',
+                }}
+              >
+                {item.type === 'income' ? '+' : '-'}₹{item.amount}
+              </Text>
+            </View>
+          )}
+        />
+
+        {/* Footer Navigation Bar */}
+        <View style={styles.footerNav}>
+          <TouchableOpacity>
+            <Icon name="home" size={24} color="#555" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Overview', { transactions })}>
+            <Icon name="bar-chart-outline" size={24} color="#555" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.plusIconWrapper}
+            onPress={() => navigation.navigate('AddTransaction')}
+          >
+            <Icon name="add" size={28} color="#fff" />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate('Wallet')}>
+            <Icon name="wallet-outline" size={24} color="#555" />
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+            <Icon name="person-outline" size={24} color="#555" />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </SideBarWrapper>
   );
 }
 
@@ -137,28 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f3f0ff',
     padding: 20,
-    paddingTop: 65,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center',
-  },
-  redDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: 'red',
-    position: 'absolute',
-    top: -3,
-    right: -3,
+    paddingTop: 25,
   },
   balanceCard: {
     borderRadius: 16,
