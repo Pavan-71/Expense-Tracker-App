@@ -10,10 +10,11 @@ import AddTransactionScreen from './src/AddTransactionScreen';
 import AddFormScreen from './src/AddFormScreen';
 import NotificationScreen from './src/NotificationsScreen';
 import NotificationDetailScreen from './src/NotificationDetailScreen';
-import WalletScreen from './src/WalletScreen'; // ✅ Wallet screen
+import WalletScreen from './src/WalletScreen';
+import LogsScreen from './src/LogsScreen';
+import AboutScreen from './src/AboutScreen'; // ✅ Added About screen import
 
 import { Transaction } from './src/types';
-
 export type RootStackParamList = {
   Home: undefined;
   Overview: { transactions: Transaction[] };
@@ -25,7 +26,9 @@ export type RootStackParamList = {
     title: string;
     content: string;
   };
-  Wallet: undefined; // ✅ Added wallet route
+  Wallet: undefined;
+  Logs: undefined;
+  About: undefined; // ✅ Added About to type list
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -42,12 +45,12 @@ export default function App() {
         <Stack.Screen
           name="Overview"
           component={OverviewScreen}
-          options={{ headerShown: true, title: 'OverView' }}
+          options={{ title: 'Overview' }}
         />
         <Stack.Screen
           name="AddTransaction"
           component={AddTransactionScreen}
-          options={{ headerShown: true, title: 'Log Transactions' }}
+          options={{ title: 'Log Transactions' }}
         />
         <Stack.Screen
           name="AddForm"
@@ -67,7 +70,17 @@ export default function App() {
         <Stack.Screen
           name="Wallet"
           component={WalletScreen}
-          options={{ title: 'Wallet' }} // ✅ Wallet screen
+          options={{ title: 'Wallet' }}
+        />
+        <Stack.Screen
+          name="Logs"
+          component={LogsScreen}
+          options={{ title: 'Transaction Logs' }}
+        />
+        <Stack.Screen
+          name="About"
+          component={AboutScreen}
+          options={{ title: 'About App' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

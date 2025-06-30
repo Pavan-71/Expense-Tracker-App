@@ -7,20 +7,28 @@ import {
   StyleSheet,
   SafeAreaView,
   Platform,
+  Pressable,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App'; // adjust path if needed
+import { Transaction } from './types'; // adjust path if needed
 
 type SideBarWrapperProps = {
   children: React.ReactNode;
   notificationDot?: boolean;
   onNotificationPress?: () => void;
+  transactions?: Transaction[];
 };
 
 const SidebarWrapper = ({
   children,
   notificationDot,
   onNotificationPress,
+  transactions,
 }: SideBarWrapperProps) => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const slideAnim = useRef(new Animated.Value(-250)).current;
   const [visible, setVisible] = useState(false);
 
@@ -33,9 +41,26 @@ const SidebarWrapper = ({
     setVisible(!visible);
   };
 
+  const closeSidebar = () => {
+    Animated.timing(slideAnim, {
+      toValue: -250,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => setVisible(false));
+  };
+
+  const handleNavigate = (screen: keyof RootStackParamList) => {
+    if (screen === 'Overview') {
+      navigation.navigate('Overview', { transactions: transactions || [] });
+    } else {
+      navigation.navigate(screen as any);
+    }
+    closeSidebar();
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      {/* ✅ Safe Top Bar */}
+      {/* Top Bar */}
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={toggleSidebar}>
@@ -51,13 +76,34 @@ const SidebarWrapper = ({
         </View>
       </SafeAreaView>
 
-      {/* Slide-in Sidebar */}
+      {/* Overlay */}
+      {visible && <Pressable style={styles.overlay} onPress={closeSidebar} />}
+
+      {/* Sidebar */}
       <Animated.View style={[styles.sidebar, { left: slideAnim }]}>
-        <Text style={styles.menuItem}>🏠 Home</Text>
-        <Text style={styles.menuItem}>💰 Wallet</Text>
-        <Text style={styles.menuItem}>📄 Logs</Text>
-        <Text style={styles.menuItem}>💡 Tips</Text>
-        <Text style={styles.menuItem}>🌙 Dark Mode</Text>
+        <TouchableOpacity onPress={() => handleNavigate('Home')}>
+          <Text style={styles.menuItem}>🏠 Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate('Overview')}>
+          <Text style={styles.menuItem}>📊 Dashboard</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate('Wallet')}>
+          <Text style={styles.menuItem}>💰 Wallet</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate('Logs')}>
+          <Text style={styles.menuItem}>📄 Logs</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate('Notification')}>
+          <Text style={styles.menuItem}>💡 Tips</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate('About')}>
+          <Text style={styles.menuItem}>ℹ️ About</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+          // TODO: Handle theme toggle here
+        }}>
+          <Text style={styles.menuItem}>🌙 Dark Mode</Text>
+        </TouchableOpacity>
       </Animated.View>
 
       {/* Screen Content */}
@@ -99,6 +145,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -3,
     right: -3,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 60 + (Platform.OS === 'android' ? 25 : 0),
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    zIndex: 5,
   },
   sidebar: {
     position: 'absolute',

@@ -99,7 +99,7 @@ export default function WalletScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, padding: 20, backgroundColor: '#f3e8ff' },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',

@@ -52,6 +52,7 @@ export default function HomeScreen() {
     <SideBarWrapper
       notificationDot={hasUnreadTips}
       onNotificationPress={() => navigation.navigate('Notification')}
+      transactions={transactions}
     >
       <SafeAreaView style={styles.container}>
         {/* Balance Summary Card */}
@@ -127,7 +128,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f3f0ff',
+    backgroundColor: '#f3e8ff',
     padding: 20,
     paddingTop: 25,
   },

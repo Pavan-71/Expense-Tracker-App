@@ -69,7 +69,7 @@ export default function AddTransactionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f3e8ff',
     padding: 20,
     paddingTop: 20,
   },

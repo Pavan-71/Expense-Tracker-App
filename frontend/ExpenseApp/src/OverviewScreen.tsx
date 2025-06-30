@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingTop: 10, // Reduced from 45 to 10 for spacing under header
-    backgroundColor: '#fff',
+    backgroundColor: '#f3e8ff',
   },
   diffText: {
     fontSize: 16,
