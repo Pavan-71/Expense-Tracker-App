@@ -1,5 +1,3 @@
-// 📄 File: src/AddTransactionScreen.tsx
-
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -36,7 +34,7 @@ export default function AddTransactionScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.toggleBtn, { backgroundColor: '#ff6b00' }]}
+          style={[styles.toggleBtn, { backgroundColor: '#8854d0' }]}
           onPress={() => navigation.navigate('AddForm', { type: 'expense' })}
         >
           <Text style={styles.toggleText}>Add Expense</Text>

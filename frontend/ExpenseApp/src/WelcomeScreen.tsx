@@ -11,18 +11,15 @@ const WelcomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Logo at top */}
       <Image
         source={require('../assets/logo.png')}
         style={styles.logo}
         resizeMode="contain"
       />
 
-      {/* Welcome message */}
       <Text style={styles.title}>Welcome to SpendZ!</Text>
       <Text style={styles.subtitle}>Your Smart Companion for Effortless Expense Control.</Text>
 
-      {/* Buttons stacked below text */}
       <View style={styles.buttonGroup}>
         <TouchableOpacity
           style={styles.button}
@@ -58,17 +55,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 32,
     color: '#4a148c',
     marginBottom: 8,
     textAlign: 'center',
+    fontFamily: 'Montserrat-Italic',
   },
   subtitle: {
     fontSize: 16,
     color: '#555',
     textAlign: 'center',
     marginBottom: 32,
+    fontFamily: 'Montserrat-Italic',
   },
   buttonGroup: {
     width: '100%',
@@ -90,5 +88,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
+    fontFamily: 'Montserrat-Italic', 
   },
 });

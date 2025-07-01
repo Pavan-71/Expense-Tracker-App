@@ -4,7 +4,6 @@ import { Transaction } from '../types';
 
 const API_URL = 'http://10.0.2.2:5000/api/transactions';
 
-// ✅ Get auth headers with token
 const getAuthHeaders = async () => {
   const token = await AsyncStorage.getItem('token');
   return {
@@ -20,7 +19,9 @@ export const getTransactions = async (): Promise<Transaction[]> => {
   return response.data;
 };
 
-export const createTransaction = async (transaction: Omit<Transaction, '_id'>): Promise<Transaction> => {
+export const createTransaction = async (
+  transaction: Omit<Transaction, '_id'>
+): Promise<Transaction> => {
   const config = await getAuthHeaders();
   const response = await axios.post<Transaction>(API_URL, transaction, config);
   return response.data;
@@ -36,6 +37,10 @@ export const updateTransaction = async (
   updatedTransaction: Partial<Omit<Transaction, '_id'>>
 ): Promise<Transaction> => {
   const config = await getAuthHeaders();
-  const response = await axios.put<Transaction>(`${API_URL}/${id}`, updatedTransaction, config);
+  const response = await axios.put<Transaction>(
+    `${API_URL}/${id}`,
+    updatedTransaction,
+    config
+  );
   return response.data;
 };

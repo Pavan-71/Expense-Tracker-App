@@ -1,28 +1,54 @@
-// 📄 src/AboutScreen.tsx
-
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function AboutScreen() {
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Expense Tracker</Text>
-      <Text style={styles.text}>Version: 1.0.0</Text>
-      <Text style={styles.text}>Developed by: Saketh</Text>
+      <View style={styles.card}>
+        <View style={styles.headerRow}>
+          <Ionicons name="cash-outline" size={26} color="#6a1b9a" />
+          <Text style={styles.title}>Expense Tracker</Text>
+        </View>
 
-      <Text style={styles.text}>A simple and efficient React Native Expense Tracker app with a Node.js + Express backend and MongoDB database.
- Track your daily income and expenses, view summary pie charts, and manage your financial transactions with ease.</Text>
+        <Text style={styles.version}>Version 1.0.0</Text>
+        <Text style={styles.developer}>Developed by Saketh</Text>
 
-      <Text style={styles.sectionTitle}>Tech Stack</Text>
-      <Text style={styles.bullet}>• React Native (Frontend)</Text>
-      <Text style={styles.bullet}>• Node.js & Express (Backend APIs)</Text>
-      <Text style={styles.bullet}>• MongoDB (Database)</Text>
-      <Text style={styles.bullet}>• Victory / ChartKit (Data Visualization)</Text>
-      <Text style={styles.bullet}>• AsyncStorage (Local Persistence)</Text>
-      <Text style={styles.bullet}>• React Navigation (Routing)</Text>
+        <Text style={styles.description}>
+          A simple yet powerful Expense Tracker built with React Native for frontend,
+          and Node.js + Express for backend. Track your income and expenses,
+          visualize summaries with charts, and manage your finances effortlessly.
+        </Text>
 
-      <Text style={styles.text}>All features are optimized for performance, scalability, and user experience.</Text>
-      <Text style={styles.text}>© 2025 Expense Tracker. All rights reserved.</Text>
+        <View style={styles.headerRow}>
+          <Ionicons name="rocket-outline" size={22} color="#6a1b9a" />
+          <Text style={styles.sectionTitle}>Tech Stack</Text>
+        </View>
+
+        {[
+          'React Native (Frontend)',
+          'Node.js & Express (Backend APIs)',
+          'MongoDB (Database)',
+          'Victory / ChartKit (Data Visualization)',
+          'AsyncStorage (Local Persistence)',
+          'React Navigation (Routing)',
+        ].map((item, index) => (
+          <View key={index} style={styles.bulletItem}>
+            <Ionicons
+              name="checkmark-circle-outline"
+              size={20}
+              color="#6a1b9a"
+              style={styles.bulletIcon}
+            />
+            <Text style={styles.bulletText}>{item}</Text>
+          </View>
+        ))}
+
+        <Text style={styles.footer}>
+          All features are optimized for speed, scalability, and smooth UX.
+        </Text>
+        <Text style={styles.footer}>© 2025 Expense Tracker. All rights reserved.</Text>
+      </View>
     </ScrollView>
   );
 }
@@ -30,30 +56,75 @@ export default function AboutScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f3e8ff',
+    padding: 16,
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
     padding: 20,
-    backgroundColor: '#f3e8ff', // 💜 Light purplish-white
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    gap: 8,
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
+    fontSize: 24,
+    fontFamily: 'Montserrat Bold Italic',
+    color: '#6a1b9a',
+  },
+  version: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 2,
+    fontFamily: 'Montserrat',
+  },
+  developer: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 12,
+    fontFamily: 'Montserrat',
+  },
+  description: {
+    fontSize: 16,
+    color: '#444',
+    marginBottom: 20,
+    fontFamily: 'Montserrat',
+    lineHeight: 22,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 15,
+    fontWeight: '600',
+    color: '#6a1b9a',
+    fontFamily: 'Montserrat',
+  },
+  bulletItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 8,
-    color: '#444',
   },
-  text: {
-    fontSize: 16,
-    marginVertical: 6,
-    color: '#555',
+  bulletIcon: {
+    marginRight: 8,
   },
-  bullet: {
+  bulletText: {
     fontSize: 16,
-    marginLeft: 10,
-    color: '#555',
+    color: '#333',
+    fontFamily: 'Montserrat',
+  },
+  footer: {
+    fontSize: 14,
+    color: '#777',
+    marginTop: 16,
+    fontFamily: 'Montserrat Italic',
+    textAlign: 'center',
   },
 });

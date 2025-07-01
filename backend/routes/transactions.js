@@ -3,7 +3,6 @@ const router = express.Router();
 const Transaction = require('../models/Transaction');
 const protect = require('../middleware/authMiddleware');
 
-// 🔐 GET user’s transactions
 router.get('/', protect, async (req, res) => {
   try {
     const transactions = await Transaction.find({ user: req.user.id }).sort({ date: -1 });
@@ -14,9 +13,8 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
-// 🔐 ADD transaction
 router.post('/', protect, async (req, res) => {
-  const { amount, category, type, date, description } = req.body;
+  const { amount, category, type, date, description, title } = req.body;
 
   if (!amount || !category || !type) {
     return res.status(400).json({ message: 'Amount, category, and type are required.' });
@@ -26,9 +24,10 @@ router.post('/', protect, async (req, res) => {
     amount,
     category,
     type,
+    title, 
     date: date || Date.now(),
     description: description || '',
-    user: req.user.id, // ✅ Link to user
+    user: req.user.id,
   });
 
   try {
@@ -40,12 +39,11 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-// 🔐 DELETE
 router.delete('/:id', protect, async (req, res) => {
   try {
     const deleted = await Transaction.findOneAndDelete({
       _id: req.params.id,
-      user: req.user.id, // ✅ Only allow user's own
+      user: req.user.id,
     });
 
     if (!deleted) return res.status(404).json({ message: 'Transaction not found' });
@@ -56,14 +54,13 @@ router.delete('/:id', protect, async (req, res) => {
   }
 });
 
-// 🔐 UPDATE
 router.put('/:id', protect, async (req, res) => {
-  const { amount, category, type, date, description } = req.body;
+  const { amount, category, type, date, description, title } = req.body;
 
   try {
     const updated = await Transaction.findOneAndUpdate(
-      { _id: req.params.id, user: req.user.id }, // ✅ Must belong to user
-      { amount, category, type, date, description },
+      { _id: req.params.id, user: req.user.id },
+      { amount, category, type, date, description, title }, 
       { new: true, runValidators: true }
     );
 

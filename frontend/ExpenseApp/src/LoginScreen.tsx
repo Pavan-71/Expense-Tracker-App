@@ -1,10 +1,10 @@
-// 📄 File: src/LoginScreen.tsx
-
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { AuthContext } from './context/AuthContext';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/Feather';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -42,38 +42,111 @@ export default function LoginScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput
-        placeholder="Email"
-        style={styles.input}
-        onChangeText={setEmail}
-        value={email}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <TextInput
-        placeholder="Password"
-        secureTextEntry
-        style={styles.input}
-        onChangeText={setPassword}
-        value={password}
-      />
-      <Button
-        title={loading ? 'Logging in...' : 'Login'}
-        onPress={handleLogin}
-        disabled={loading || !email || !password}
-      />
-      <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>
-        Don't have an account? Sign up
-      </Text>
-    </View>
+    <LinearGradient colors={['#f3e8ff', '#d1b3ff']} style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        <View style={styles.card}>
+          <Text style={styles.title}>Welcome Back</Text>
+
+          <View style={styles.inputContainer}>
+            <Icon name="mail" size={20} color="#6a1b9a" />
+            <TextInput
+              placeholder="Email"
+              style={styles.input}
+              onChangeText={setEmail}
+              value={email}
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Icon name="lock" size={20} color="#6a1b9a" />
+            <TextInput
+              placeholder="Password"
+              secureTextEntry
+              style={styles.input}
+              onChangeText={setPassword}
+              value={password}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={[styles.loginButton, !(email && password) && { opacity: 0.5 }]}
+            onPress={handleLogin}
+            disabled={loading || !email || !password}
+          >
+            <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.link} onPress={() => navigation.replace('Signup')}>
+            Don't have an account? Sign up
+          </Text>
+        </View>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, flex: 1, justifyContent: 'center' },
-  title: { fontSize: 24, marginBottom: 20, textAlign: 'center' },
-  input: { borderBottomWidth: 1, marginBottom: 15, padding: 8 },
-  link: { color: 'blue', marginTop: 20, textAlign: 'center' },
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+    padding: 20,
+    paddingTop: 80,
+  },
+  card: {
+    backgroundColor: '#fff',
+    padding: 24,
+    borderRadius: 16,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+  },
+  title: {
+    fontSize: 24,
+    textAlign: 'center',
+    marginBottom: 24,
+    color: '#6a1b9a',
+    fontFamily: 'Montserrat Bold Italic',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f3e8ff',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+  },
+  input: {
+    flex: 1,
+    padding: 12,
+    fontSize: 16,
+    fontFamily: 'Montserrat',
+    color: '#333',
+  },
+  loginButton: {
+    backgroundColor: '#6a1b9a',
+    paddingVertical: 14,
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Montserrat',
+  },
+  link: {
+    color: '#6a1b9a',
+    textAlign: 'center',
+    marginTop: 20,
+    textDecorationLine: 'underline',
+    fontFamily: 'Montserrat Italic',
+  },
 });

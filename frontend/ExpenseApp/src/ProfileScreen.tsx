@@ -1,7 +1,14 @@
-// 📄 File: src/ProfileScreen.tsx
-
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
@@ -22,34 +29,53 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image
-        source={require('../assets/profile-placeholder.png')}
-        style={styles.avatar}
-      />
-      <Text style={styles.name}>{user?.username}</Text>
-      <Text style={styles.email}>{user?.email}</Text>
-      <Text style={styles.info}>{user?.phone || 'Phone not available'}</Text>
-      <Text style={styles.info}>Account Type: {accountType}</Text>
+      <View style={styles.profileCard}>
+        <Image
+          source={require('../assets/profile-placeholder.png')}
+          style={styles.avatar}
+        />
+        <Text style={styles.name}>{user?.username}</Text>
+        <Text style={styles.email}>{user?.email}</Text>
+        <Text style={styles.info}>
+          <Ionicons name="call-outline" size={14} /> {user?.phone || 'Phone not added'}
+        </Text>
+        <Text style={styles.accountBadge}>
+          <Ionicons
+            name={accountType === 'ADMIN' ? 'shield-checkmark-outline' : 'person-circle-outline'}
+            size={14}
+          />{' '}
+          {accountType === 'ADMIN' ? 'Admin Account' : 'User Account'}
+        </Text>
+      </View>
 
       <View style={styles.divider} />
 
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Terms')}>
-        <Text style={styles.optionText}>📄 Terms & Conditions</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Help')}>
-        <Text style={styles.optionText}>❓ Help / FAQs</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Privacy')}>
-        <Text style={styles.optionText}>🔐 Privacy Policy</Text>
-      </TouchableOpacity>
+      <View style={styles.optionsWrapper}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Terms')}>
+          <Ionicons name="document-text-outline" size={18} color="#4a148c" />
+          <Text style={styles.optionText}>Terms & Conditions</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Help')}>
+          <Ionicons name="help-circle-outline" size={18} color="#4a148c" />
+          <Text style={styles.optionText}>Help & FAQs</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Privacy')}>
+          <Ionicons name="lock-closed-outline" size={18} color="#4a148c" />
+          <Text style={styles.optionText}>Privacy Policy</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Settings')}>
+          <Ionicons name="settings-outline" size={18} color="#4a148c" />
+          <Text style={styles.optionText}>Settings</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Settings')}>
-        <Text style={styles.optionText}>⚙️ Settings</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.option, { backgroundColor: '#fee2e2' }]} onPress={handleLogout}>
-        <Text style={[styles.optionText, { color: '#b91c1c' }]}>🚪 Logout</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.option, styles.logoutButton]}
+          onPress={handleLogout}
+        >
+          <Ionicons name="log-out-outline" size={18} color="#b91c1c" />
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
@@ -63,26 +89,47 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingBottom: 100,
   },
+  profileCard: {
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 16,
+    width: '100%',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 16,
-    marginTop: 16,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    marginBottom: 12,
   },
   name: {
     fontSize: 22,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: 'bold',
+    color: '#4a148c',
   },
   email: {
     fontSize: 16,
-    color: '#666',
-    marginBottom: 4,
+    color: '#555',
+    marginTop: 4,
   },
   info: {
-    fontSize: 16,
-    color: '#555',
+    fontSize: 15,
+    color: '#666',
+    marginTop: 2,
+  },
+  accountBadge: {
+    marginTop: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    backgroundColor: '#ede7f6',
+    borderRadius: 12,
+    fontSize: 13,
+    color: '#6a1b9a',
   },
   divider: {
     width: '100%',
@@ -90,30 +137,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     marginVertical: 20,
   },
-  option: {
+  optionsWrapper: {
     width: '100%',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 8,
-    marginBottom: 10,
+    borderRadius: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    marginBottom: 12,
+    elevation: 2,
+    gap: 10,
   },
   optionText: {
     fontSize: 16,
     color: '#333',
   },
-  settingsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#444',
-    alignSelf: 'flex-start',
-    marginBottom: 10,
+  logoutButton: {
+    backgroundColor: '#fee2e2',
   },
-  label: {
+  logoutText: {
     fontSize: 16,
-    color: '#555',
-    alignSelf: 'flex-start',
-    marginLeft: 10,
-    marginVertical: 2,
+    color: '#b91c1c',
   },
 });

@@ -1,4 +1,3 @@
-// 📄 File: src/ProtectedRoute.tsx
 import React, { useContext, useEffect, ReactNode } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';

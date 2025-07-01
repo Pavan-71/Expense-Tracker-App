@@ -1,5 +1,3 @@
-// 📄 File: src/OverviewScreen.tsx
-
 import React, { useState } from 'react';
 import {
   View,
@@ -36,77 +34,59 @@ export default function OverviewScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Removed custom title text since header handles it */}
       <Text style={styles.diffText}>
         Difference (Income - Expense): ₹{diff}
       </Text>
 
       <BarChart
-        data={{
-          labels: ['Income', 'Expense'],
-          datasets: [{ data: [income, expense] }],
-        }}
-        width={screenWidth - 40}
-        height={220}
-        chartConfig={{
-          backgroundGradientFrom: '#f3f3f3',
-          backgroundGradientTo: '#f3f3f3',
-          decimalPlaces: 2,
-          color: (opacity = 1) => `rgba(136, 84, 208, ${opacity})`,
-          labelColor: () => '#333',
-        }}
-        style={{ marginTop: 20, borderRadius: 12 }}
-        fromZero
-        showValuesOnTopOfBars
-        yAxisLabel="₹"
-        yAxisSuffix=""
-      />
+  data={{
+    labels: ['Income', 'Expense'],
+    datasets: [{ data: [income, expense] }],
+  }}
+  width={screenWidth - 40}
+  height={220}
+  chartConfig={{
+    backgroundGradientFrom: '#f3f3f3',
+    backgroundGradientTo: '#f3f3f3',
+    decimalPlaces: 2,
+    color: (opacity = 1) => `rgba(136, 84, 208, ${opacity})`,
+    labelColor: () => '#333',
+  }}
+  style={{ marginTop: 20, borderRadius: 12 }}
+  fromZero
+  showValuesOnTopOfBars
+  yAxisLabel="₹"
+  yAxisSuffix="" 
+/>
 
-      {/* Toggle Buttons */}
+
       <View style={styles.toggleRow}>
         <TouchableOpacity
-          style={[
-            styles.toggleBtn,
-            selectedType === 'income' && styles.activeBtn,
-          ]}
+          style={[styles.toggleBtn, selectedType === 'income' && styles.activeBtn]}
           onPress={() => setSelectedType('income')}
         >
-          <Text
-            style={[
-              styles.toggleText,
-              selectedType === 'income' && styles.activeText,
-            ]}
-          >
+          <Text style={[styles.toggleText, selectedType === 'income' && styles.activeText]}>
             Income
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.toggleBtn,
-            selectedType === 'expense' && styles.activeBtn,
-          ]}
+          style={[styles.toggleBtn, selectedType === 'expense' && styles.activeBtn]}
           onPress={() => setSelectedType('expense')}
         >
-          <Text
-            style={[
-              styles.toggleText,
-              selectedType === 'expense' && styles.activeText,
-            ]}
-          >
+          <Text style={[styles.toggleText, selectedType === 'expense' && styles.activeText]}>
             Expense
           </Text>
         </TouchableOpacity>
       </View>
 
-      {/* Filtered Transactions */}
       <FlatList
         data={filtered}
         keyExtractor={(item) => item._id || Math.random().toString()}
         renderItem={({ item }) => (
           <View style={styles.logCard}>
             <View>
-              <Text style={styles.logCategory}>{item.category}</Text>
+              <Text style={styles.logCategory}>{item.title || '(No Title)'}</Text>
               <Text style={styles.logDate}>
                 {new Date(item.date).toLocaleDateString()}
               </Text>
@@ -131,7 +111,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingTop: 10, // Reduced from 45 to 10 for spacing under header
+    paddingTop: 10,
     backgroundColor: '#f3e8ff',
   },
   diffText: {

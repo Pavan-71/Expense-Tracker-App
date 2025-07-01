@@ -1,4 +1,3 @@
-// 📄 src/LogsScreen.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 import { Transaction } from './types';
@@ -25,7 +24,8 @@ export default function LogsScreen() {
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View>
-              <Text style={styles.category}>{item.category}</Text>
+              
+              <Text style={styles.category}>{item.title}</Text>
               <Text style={styles.date}>{new Date(item.date).toLocaleDateString()}</Text>
             </View>
             <Text

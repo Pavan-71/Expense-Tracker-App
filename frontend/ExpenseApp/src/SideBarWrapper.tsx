@@ -1,5 +1,3 @@
-// 📄 File: src/SideBarWrapper.tsx
-
 import React, { useRef, useState } from 'react';
 import {
   View,
@@ -11,7 +9,7 @@ import {
   Platform,
   Pressable,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
@@ -65,16 +63,15 @@ const SidebarWrapper = ({
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Top Bar */}
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={toggleSidebar}>
-            <Text style={styles.hamburger}>☰</Text>
+            <Ionicons name="menu" size={28} color="#555" />
           </TouchableOpacity>
           <Text style={styles.header}>{currentRoute}</Text>
           <TouchableOpacity onPress={onNotificationPress}>
             <View>
-              <Icon name="notifications-outline" size={24} color="#555" />
+              <Ionicons name="notifications-outline" size={24} color="#555" />
               {notificationDot && <View style={styles.redDot} />}
             </View>
           </TouchableOpacity>
@@ -83,46 +80,41 @@ const SidebarWrapper = ({
 
       {visible && <Pressable style={styles.overlay} onPress={closeSidebar} />}
 
-      {/* Sidebar */}
       <Animated.View style={[styles.sidebar, { left: slideAnim }]}>
-        <TouchableOpacity onPress={() => handleNavigate('Profile')}>
-          <Text style={[styles.menuItem]}>
-            👤 Profile
-          </Text>
+        <TouchableOpacity onPress={() => handleNavigate('Profile')} style={styles.menuRow}>
+          <Ionicons name="person-outline" size={22} color="#555" />
+          <Text style={styles.menuItem}>Profile</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Home')}>
-          <Text style={[styles.menuItem]}>
-            🏠 Home
-          </Text>
+        <TouchableOpacity onPress={() => handleNavigate('Home')} style={styles.menuRow}>
+          <Ionicons name="home-outline" size={22} color="#555" />
+          <Text style={styles.menuItem}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Overview')}>
-          <Text style={[styles.menuItem]}>
-            📊 Dashboard
-          </Text>
+        <TouchableOpacity onPress={() => handleNavigate('Overview')} style={styles.menuRow}>
+          <Ionicons name="bar-chart-outline" size={22} color="#555" />
+          <Text style={styles.menuItem}>Dashboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Wallet')}>
-          <Text style={[styles.menuItem]}>
-            💰 Wallet
-          </Text>
+        <TouchableOpacity onPress={() => handleNavigate('Wallet')} style={styles.menuRow}>
+          <Ionicons name="card-outline" size={22} color="#555" />
+          <Text style={styles.menuItem}>Wallet</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Logs')}>
-          <Text style={[styles.menuItem]}>
-            📄 Logs
-          </Text>
+        <TouchableOpacity onPress={() => handleNavigate('Logs')} style={styles.menuRow}>
+          <Ionicons name="document-text-outline" size={22} color="#555" />
+          <Text style={styles.menuItem}>Logs</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Notification')}>
-          <Text style={[styles.menuItem]}>
-            💡 Tips
-          </Text>
+        <TouchableOpacity onPress={() => handleNavigate('Notification')} style={styles.menuRow}>
+          <Ionicons name="bulb-outline" size={22} color="#555" />
+          <Text style={styles.menuItem}>Tips</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('About')}>
-          <Text style={[styles.menuItem]}>
-            ℹ️ About
-          </Text>
+        <TouchableOpacity onPress={() => handleNavigate('About')} style={styles.menuRow}>
+          <Ionicons name="information-circle-outline" size={22} color="#555" />
+          <Text style={styles.menuItem}>About</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate('Settings')} style={styles.menuRow}>
+          <Ionicons name="settings-outline" size={22} color="#555" />
+          <Text style={styles.menuItem}>Settings</Text>
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Main Content */}
       <View style={{ flex: 1 }}>{children}</View>
     </View>
   );
@@ -142,11 +134,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-  },
-  hamburger: {
-    fontSize: 24,
-    color: '#555',
-    marginRight: 16,
   },
   header: {
     fontSize: 20,
@@ -180,9 +167,14 @@ const styles = StyleSheet.create({
     zIndex: 10,
     padding: 16,
   },
-  menuItem: {
-    color: '#555',
-    fontSize: 18,
+  menuRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginVertical: 12,
+  },
+  menuItem: {
+    fontSize: 16,
+    marginLeft: 12,
+    color: '#555',
   },
 });

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    default: 'Untitled',
+  },
   amount: {
     type: Number,
     required: true,
@@ -25,7 +30,7 @@ const transactionSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true, // ✅ Required for linking to user
+    required: true,
   },
 });
 

@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require('../models/User');
 const protect = require('../middleware/authMiddleware');
 
-// ✏️ Update current user's profile
 router.put('/me', protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);

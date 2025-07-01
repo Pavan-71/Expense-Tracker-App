@@ -1,5 +1,3 @@
-// 📄 File: HomeScreen.tsx
-
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -7,18 +5,19 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Alert,
   SafeAreaView,
   Dimensions,
 } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getTransactions } from './api/transactions';
+import { getTransactions, deleteTransaction } from './api/transactions';
 import { Transaction } from './types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../App';
-import SideBarWrapper from './SideBarWrapper'; 
+import SideBarWrapper from './SideBarWrapper';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -30,23 +29,37 @@ export default function HomeScreen() {
   const [expense, setExpense] = useState(0);
   const [hasUnreadTips, setHasUnreadTips] = useState(false);
 
+  const fetchTransactions = async () => {
+    const data = await getTransactions();
+    setTransactions(data);
+
+    const incomeTotal = data.filter(t => t.type === 'income').reduce((a, b) => a + b.amount, 0);
+    const expenseTotal = data.filter(t => t.type === 'expense').reduce((a, b) => a + b.amount, 0);
+
+    setIncome(incomeTotal);
+    setExpense(expenseTotal);
+
+    const unread = await AsyncStorage.getItem('hasUnreadTips');
+    setHasUnreadTips(unread === 'true');
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      const data = await getTransactions();
-      setTransactions(data);
-
-      const incomeTotal = data.filter(t => t.type === 'income').reduce((a, b) => a + b.amount, 0);
-      const expenseTotal = data.filter(t => t.type === 'expense').reduce((a, b) => a + b.amount, 0);
-
-      setIncome(incomeTotal);
-      setExpense(expenseTotal);
-
-      const unread = await AsyncStorage.getItem('hasUnreadTips');
-      setHasUnreadTips(unread === 'true');
-    };
-
-    if (isFocused) fetch();
+    if (isFocused) fetchTransactions();
   }, [isFocused]);
+
+  const handleDelete = (id: string) => {
+    Alert.alert('Delete', 'Are you sure you want to delete this transaction?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          await deleteTransaction(id);
+          fetchTransactions(); 
+        },
+      },
+    ]);
+  };
 
   const balance = income - expense;
 
@@ -57,23 +70,17 @@ export default function HomeScreen() {
       transactions={transactions}
     >
       <SafeAreaView style={styles.container}>
-        {/* Balance Summary Card */}
-        <LinearGradient
-          colors={["#b18aff", "#e6d4ff"]}
-          style={styles.balanceCard}
-        >
+        <LinearGradient colors={['#b18aff', '#e6d4ff']} style={styles.balanceCard}>
           <Text style={styles.balanceLabel}>
             Your Balance <Icon name="chevron-down" size={18} />
           </Text>
           <Text style={styles.balanceAmount}>₹ {balance}</Text>
-
           <View style={styles.rowBetween}>
             <Text style={[styles.incomeExpense, { color: '#2c2c2c' }]}>Income: ₹{income}</Text>
             <Text style={[styles.incomeExpense, { color: '#2c2c2c' }]}>Expense: ₹{expense}</Text>
           </View>
         </LinearGradient>
 
-        {/* Transaction List */}
         <Text style={styles.sectionTitle}>Transactions</Text>
         <FlatList
           data={transactions}
@@ -83,22 +90,27 @@ export default function HomeScreen() {
           renderItem={({ item }) => (
             <View style={styles.transactionCard}>
               <View>
-                <Text style={styles.category}>{item.category}</Text>
+                <Text style={styles.category}>{item.title || '(Untitled)'}</Text>
                 <Text style={{ color: '#666' }}>{new Date(item.date).toLocaleDateString()}</Text>
               </View>
-              <Text
-                style={{
-                  color: item.type === 'income' ? '#4caf50' : '#f44336',
-                  fontWeight: 'bold',
-                }}
-              >
-                {item.type === 'income' ? '+' : '-'}₹{item.amount}
-              </Text>
+              <View style={styles.rightSection}>
+                <Text
+                  style={{
+                    color: item.type === 'income' ? '#4caf50' : '#f44336',
+                    fontWeight: 'bold',
+                    marginRight: 12,
+                  }}
+                >
+                  {item.type === 'income' ? '+' : '-'}₹{item.amount}
+                </Text>
+                <TouchableOpacity onPress={() => handleDelete(item._id!)}>
+                  <Icon name="trash-outline" size={22} color="#888" />
+                </TouchableOpacity>
+              </View>
             </View>
           )}
         />
 
-        {/* Footer Navigation Bar */}
         <View style={styles.footerNav}>
           <TouchableOpacity>
             <Icon name="home" size={24} color="#555" />
@@ -117,8 +129,6 @@ export default function HomeScreen() {
           <TouchableOpacity onPress={() => navigation.navigate('Wallet')}>
             <Icon name="wallet-outline" size={24} color="#555" />
           </TouchableOpacity>
-
-          {/* ✅ Profile Icon navigation added */}
           <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
             <Icon name="person-outline" size={24} color="#555" />
           </TouchableOpacity>
@@ -129,17 +139,8 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f3e8ff',
-    padding: 20,
-    paddingTop: 25,
-  },
-  balanceCard: {
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 20,
-  },
+  container: { flex: 1, backgroundColor: '#f3e8ff', padding: 20, paddingTop: 25 },
+  balanceCard: { borderRadius: 16, padding: 20, marginBottom: 20 },
   balanceLabel: { fontSize: 16, fontWeight: '500', color: '#333' },
   balanceAmount: { fontSize: 32, fontWeight: 'bold', marginVertical: 10 },
   rowBetween: { flexDirection: 'row', justifyContent: 'space-between' },
@@ -152,13 +153,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 4,
+    alignItems: 'center',
     elevation: 3,
   },
   category: { fontSize: 16, fontWeight: '600' },
+  rightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   footerNav: {
     position: 'absolute',
     bottom: 20,
@@ -170,10 +172,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: -1 },
-    shadowRadius: 4,
     elevation: 10,
   },
   plusIconWrapper: {

@@ -1,5 +1,3 @@
-// 📄 File: src/AddFormScreen.tsx
-
 import React, { useState } from 'react';
 import {
   View,
@@ -20,31 +18,31 @@ type AddFormRouteProp = RouteProp<RootStackParamList, 'AddForm'>;
 export default function AddFormScreen() {
   const navigation = useNavigation();
   const route = useRoute<AddFormRouteProp>();
-  const { type } = route.params;
+  const defaultType = route.params.type;
 
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedType, setSelectedType] = useState<'income' | 'expense'>(defaultType);
 
   const handleAddTransaction = async () => {
-    if (!title || !amount || !category) {
+    if (!title || !amount) {
       return Alert.alert('Please fill in all required fields');
     }
 
     try {
       await createTransaction({
-        type,
+        type: selectedType,
         title,
-        category,
+        category: selectedType, 
         amount: parseFloat(amount),
         description,
         date: date.toISOString(),
       });
 
-      Alert.alert('Success', `${type} added successfully`);
+      Alert.alert('Success', `${selectedType} added successfully`);
       navigation.goBack();
     } catch (error) {
       console.error('Failed to add:', error);
@@ -54,7 +52,9 @@ export default function AddFormScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{type === 'income' ? 'Add Income' : 'Add Expense'}</Text>
+      <Text style={styles.header}>
+        {selectedType === 'income' ? 'Add Income' : 'Add Expense'}
+      </Text>
 
       <TextInput
         style={styles.input}
@@ -71,14 +71,10 @@ export default function AddFormScreen() {
         onChangeText={setAmount}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Category"
-        value={category}
-        onChangeText={setCategory}
-      />
-
-      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
+      <TouchableOpacity
+        onPress={() => setShowDatePicker(true)}
+        style={styles.dateButton}
+      >
         <Text style={styles.dateText}>Select Date: {date.toLocaleDateString()}</Text>
       </TouchableOpacity>
 
@@ -101,14 +97,46 @@ export default function AddFormScreen() {
         onChangeText={setDescription}
       />
 
+      <View style={styles.toggleContainer}>
+        <TouchableOpacity
+          style={[
+            styles.toggleButton,
+            selectedType === 'income' && styles.selectedButton,
+          ]}
+          onPress={() => setSelectedType('income')}
+        >
+          <Text
+            style={[
+              styles.toggleText,
+              selectedType === 'income' && styles.selectedText,
+            ]}
+          >
+            Income
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.toggleButton,
+            selectedType === 'expense' && styles.selectedButton,
+          ]}
+          onPress={() => setSelectedType('expense')}
+        >
+          <Text
+            style={[
+              styles.toggleText,
+              selectedType === 'expense' && styles.selectedText,
+            ]}
+          >
+            Expense
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <TouchableOpacity
-        style={[
-          styles.submitButton,
-          { backgroundColor: type === 'income' ? '#8854d0' : '#ff6b00' },
-        ]}
+        style={[styles.submitButton, { backgroundColor: '#4a148c' }]}
         onPress={handleAddTransaction}
       >
-        <Text style={styles.submitText}>Add {type === 'income' ? 'Income' : 'Expense'}</Text>
+        <Text style={styles.submitText}>Add {selectedType}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -123,6 +151,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 15,
+    backgroundColor: '#fff',
   },
   dateButton: {
     borderWidth: 1,
@@ -133,11 +162,38 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   dateText: { color: '#333' },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 12,
+    marginHorizontal: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#e0d7f5',
+    alignItems: 'center',
+  },
+  selectedButton: {
+    backgroundColor: '#4a148c',
+    borderColor: '#4a148c',
+  },
+  toggleText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '500',
+  },
+  selectedText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   submitButton: {
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
   },
   submitText: {
     color: '#fff',

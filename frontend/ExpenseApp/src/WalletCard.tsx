@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { EllipsisVertical } from 'lucide-react-native';
-import LinearGradient from 'react-native-linear-gradient'; // ✅ added
+import LinearGradient from 'react-native-linear-gradient';
 
 interface WalletCardProps {
   cardNumber: string;
@@ -9,6 +9,7 @@ interface WalletCardProps {
   expiry: string;
   balance: number;
   onMenuPress?: () => void;
+  brand?: 'Visa' | 'MasterCard'; 
 }
 
 const WalletCard: React.FC<WalletCardProps> = ({
@@ -17,10 +18,11 @@ const WalletCard: React.FC<WalletCardProps> = ({
   expiry,
   balance,
   onMenuPress,
+  brand = 'Visa', 
 }) => {
   return (
     <LinearGradient
-      colors={['#a18cd1', '#fbc2eb']} // ✅ gradient colors
+      colors={['#a18cd1', '#fbc2eb']}
       style={styles.card}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -37,6 +39,8 @@ const WalletCard: React.FC<WalletCardProps> = ({
         <Text style={styles.balanceLabel}>Total Balance</Text>
         <Text style={styles.balance}>₹{balance.toLocaleString()}</Text>
       </View>
+
+      <Text style={styles.cardBrand}>{brand}</Text>
     </LinearGradient>
   );
 };
@@ -83,6 +87,16 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginTop: 4,
+  },
+  cardBrand: {
+    position: 'absolute',
+    bottom: 16,
+    right: 20,
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    fontStyle: 'italic',
+    opacity: 0.9,
   },
 });
 

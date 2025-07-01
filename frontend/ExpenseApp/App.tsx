@@ -1,4 +1,3 @@
-// 📄 File: App.tsx
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -49,7 +48,6 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// ✅ Wrapper Components for Protected Routes
 const ProtectedHome = () => <ProtectedRoute><HomeScreen /></ProtectedRoute>;
 const ProtectedOverview = () => <ProtectedRoute><OverviewScreen /></ProtectedRoute>;
 const ProtectedAddTransaction = () => <ProtectedRoute><AddTransactionScreen /></ProtectedRoute>;
@@ -73,12 +71,11 @@ export default function App() {
           {({ user, loading }) =>
             loading ? null : (
               <Stack.Navigator initialRouteName={user ? 'Home' : 'Welcome'}>
-                {/* Public Screens */}
+              
                 <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
                 <Stack.Screen name="Signup" component={SignupScreen} options={{ title: 'Sign Up' }} />
 
-                {/* Protected Screens */}
                 <Stack.Screen name="Home" component={ProtectedHome} options={{ headerShown: false }} />
                 <Stack.Screen name="Overview" component={ProtectedOverview} options={{ title: 'Overview' }} />
                 <Stack.Screen name="AddTransaction" component={ProtectedAddTransaction} options={{ title: 'Log Transactions' }} />

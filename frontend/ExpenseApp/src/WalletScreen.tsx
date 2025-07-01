@@ -1,11 +1,19 @@
-// 📄 File: src/WalletScreen.tsx 
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Alert, Modal, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  Modal,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import WalletCard from './WalletCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function WalletScreen() {
-  const [balances, setBalances] = useState<number[]>([]); // stores balances for both cards
+  const [balances, setBalances] = useState<number[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [amount, setAmount] = useState('');
   const [actionType, setActionType] = useState<'add' | 'minus'>('add');
@@ -28,8 +36,8 @@ export default function WalletScreen() {
   const handleMenuPress = (index: number) => {
     setSelectedCardIndex(index);
     Alert.alert('Wallet Options', 'Choose an action', [
-      { text: 'Add Amount', onPress: () => { setActionType('add'); setModalVisible(true); }},
-      { text: 'Minus Amount', onPress: () => { setActionType('minus'); setModalVisible(true); }},
+      { text: 'Add Amount', onPress: () => { setActionType('add'); setModalVisible(true); } },
+      { text: 'Minus Amount', onPress: () => { setActionType('minus'); setModalVisible(true); } },
       { text: 'Cancel', style: 'cancel' },
     ]);
   };
@@ -42,7 +50,10 @@ export default function WalletScreen() {
     }
 
     const newBalances = [...balances];
-    let newBalance = actionType === 'add' ? newBalances[selectedCardIndex] + num : newBalances[selectedCardIndex] - num;
+    let newBalance =
+      actionType === 'add'
+        ? newBalances[selectedCardIndex] + num
+        : newBalances[selectedCardIndex] - num;
     if (newBalance < 0) newBalance = 0;
     newBalances[selectedCardIndex] = newBalance;
 
@@ -59,6 +70,7 @@ export default function WalletScreen() {
         cardHolder="Pavan Saketh"
         expiry="05/29"
         balance={balances[0] || 0}
+        brand="Visa" 
         onMenuPress={() => handleMenuPress(0)}
       />
 
@@ -69,6 +81,7 @@ export default function WalletScreen() {
         cardHolder="Pavan Saketh"
         expiry="06/30"
         balance={balances[1] || 0}
+        brand="MasterCard" 
         onMenuPress={() => handleMenuPress(1)}
       />
 

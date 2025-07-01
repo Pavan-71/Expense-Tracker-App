@@ -2,17 +2,15 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const protect = require('../middleware/authMiddleware'); // ✅ Import middleware
+const protect = require('../middleware/authMiddleware'); 
 require('dotenv').config();
 
-// 🔐 Generate JWT
 const generateToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: '7d',
   });
 };
 
-// 📩 Signup Route
 router.post('/signup', async (req, res) => {
   const { username, email, password, phone } = req.body;
 
@@ -44,7 +42,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// 🔑 Login Route
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -75,7 +72,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// ✅ Get logged-in user info
 router.get('/me', protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
