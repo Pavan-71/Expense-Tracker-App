@@ -115,10 +115,6 @@ Inspired by real-world personal finance tools
 
 Designed and built by Saketh
 
-📌 Screenshots
-
-Add screenshots here once available: Home | Add Transaction | Overview | Logs | Tips
-
 📄 License
 
 This project is open-source and available under the MIT License.
