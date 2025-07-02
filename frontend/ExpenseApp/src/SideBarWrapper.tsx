@@ -2,15 +2,14 @@ import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Animated,
   StyleSheet,
   SafeAreaView,
   Platform,
-  Pressable,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { Transaction } from './types';
@@ -29,14 +28,13 @@ const SidebarWrapper = ({
   transactions,
 }: SideBarWrapperProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const route = useRoute();
-  const slideAnim = useRef(new Animated.Value(-250)).current;
+  const slideAnim = useRef(new Animated.Value(-260)).current;
   const [visible, setVisible] = useState(false);
 
   const toggleSidebar = () => {
     Animated.timing(slideAnim, {
-      toValue: visible ? -250 : 0,
-      duration: 300,
+      toValue: visible ? -260 : 0,
+      duration: 250,
       useNativeDriver: false,
     }).start();
     setVisible(!visible);
@@ -44,8 +42,8 @@ const SidebarWrapper = ({
 
   const closeSidebar = () => {
     Animated.timing(slideAnim, {
-      toValue: -250,
-      duration: 300,
+      toValue: -260,
+      duration: 250,
       useNativeDriver: false,
     }).start(() => setVisible(false));
   };
@@ -59,60 +57,54 @@ const SidebarWrapper = ({
     closeSidebar();
   };
 
-  const currentRoute = route.name;
+  const menuItems: { label: string; icon: string; screen: keyof RootStackParamList }[] = [
+    { label: 'Profile', icon: 'person-outline', screen: 'Profile' },
+    { label: 'Home', icon: 'home-outline', screen: 'Home' },
+    { label: 'Dashboard', icon: 'bar-chart-outline', screen: 'Overview' },
+    { label: 'Wallet', icon: 'card-outline', screen: 'Wallet' },
+    { label: 'Logs', icon: 'document-text-outline', screen: 'Logs' },
+    { label: 'Tips', icon: 'bulb-outline', screen: 'Notification' },
+    { label: 'About', icon: 'information-circle-outline', screen: 'About' },
+    { label: 'Settings', icon: 'settings-outline', screen: 'Settings' },
+  ];
 
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topBar}>
-          <TouchableOpacity onPress={toggleSidebar}>
+          <Pressable onPress={toggleSidebar}>
             <Ionicons name="menu" size={28} color="#555" />
-          </TouchableOpacity>
-          <Text style={styles.header}>{currentRoute}</Text>
-          <TouchableOpacity onPress={onNotificationPress}>
+          </Pressable>
+          <Text style={styles.header}>Home</Text>
+          <Pressable onPress={onNotificationPress}>
             <View>
               <Ionicons name="notifications-outline" size={24} color="#555" />
               {notificationDot && <View style={styles.redDot} />}
             </View>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </SafeAreaView>
 
-      {visible && <Pressable style={styles.overlay} onPress={closeSidebar} />}
+      {visible && (
+        <Pressable style={styles.overlay} onPress={closeSidebar} />
+      )}
 
       <Animated.View style={[styles.sidebar, { left: slideAnim }]}>
-        <TouchableOpacity onPress={() => handleNavigate('Profile')} style={styles.menuRow}>
-          <Ionicons name="person-outline" size={22} color="#555" />
-          <Text style={styles.menuItem}>Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Home')} style={styles.menuRow}>
-          <Ionicons name="home-outline" size={22} color="#555" />
-          <Text style={styles.menuItem}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Overview')} style={styles.menuRow}>
-          <Ionicons name="bar-chart-outline" size={22} color="#555" />
-          <Text style={styles.menuItem}>Dashboard</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Wallet')} style={styles.menuRow}>
-          <Ionicons name="card-outline" size={22} color="#555" />
-          <Text style={styles.menuItem}>Wallet</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Logs')} style={styles.menuRow}>
-          <Ionicons name="document-text-outline" size={22} color="#555" />
-          <Text style={styles.menuItem}>Logs</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Notification')} style={styles.menuRow}>
-          <Ionicons name="bulb-outline" size={22} color="#555" />
-          <Text style={styles.menuItem}>Tips</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('About')} style={styles.menuRow}>
-          <Ionicons name="information-circle-outline" size={22} color="#555" />
-          <Text style={styles.menuItem}>About</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigate('Settings')} style={styles.menuRow}>
-          <Ionicons name="settings-outline" size={22} color="#555" />
-          <Text style={styles.menuItem}>Settings</Text>
-        </TouchableOpacity>
+        <Text style={styles.menuTitle}>Menu</Text>
+        {menuItems.map((item) => (
+          <Pressable
+            key={item.screen}
+            onPress={() => handleNavigate(item.screen)}
+            android_ripple={{ color: '#d1b3ff' }}
+            style={({ pressed }) => [
+              styles.menuRow,
+              pressed && styles.pressedRow,
+            ]}
+          >
+            <Ionicons name={item.icon} size={22} color="#555" />
+            <Text style={styles.menuItem}>{item.label}</Text>
+          </Pressable>
+        ))}
       </Animated.View>
 
       <View style={{ flex: 1 }}>{children}</View>
@@ -134,11 +126,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
   header: {
     fontSize: 20,
     color: '#555',
     fontWeight: 'bold',
+    textTransform: 'capitalize',
   },
   redDot: {
     width: 10,
@@ -162,15 +157,26 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 60 + (Platform.OS === 'android' ? 25 : 0),
     bottom: 0,
-    width: 250,
+    width: 260,
     backgroundColor: '#f3e8ff',
     zIndex: 10,
-    padding: 16,
+    padding: 20,
+  },
+  menuTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#333',
   },
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+  },
+  pressedRow: {
+    backgroundColor: '#e7dfff', // Soft background on press
   },
   menuItem: {
     fontSize: 16,

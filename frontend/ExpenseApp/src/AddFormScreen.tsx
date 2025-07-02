@@ -7,11 +7,15 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
+  KeyboardAvoidingView,
+  ScrollView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { createTransaction } from './api/transactions';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
+import { createTransaction } from './api/transactions';
 
 type AddFormRouteProp = RouteProp<RootStackParamList, 'AddForm'>;
 
@@ -29,14 +33,14 @@ export default function AddFormScreen() {
 
   const handleAddTransaction = async () => {
     if (!title || !amount) {
-      return Alert.alert('Please fill in all required fields');
+      return Alert.alert('Missing Fields', 'Please fill in Title and Amount');
     }
 
     try {
       await createTransaction({
         type: selectedType,
         title,
-        category: selectedType, 
+        category: selectedType,
         amount: parseFloat(amount),
         description,
         date: date.toISOString(),
@@ -45,145 +49,162 @@ export default function AddFormScreen() {
       Alert.alert('Success', `${selectedType} added successfully`);
       navigation.goBack();
     } catch (error) {
-      console.error('Failed to add:', error);
-      Alert.alert('Error', 'Something went wrong');
+      console.error('Add Transaction Error:', error);
+      Alert.alert('Error', 'Something went wrong while saving');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>
-        {selectedType === 'income' ? 'Add Income' : 'Add Expense'}
-      </Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Amount"
-        keyboardType="numeric"
-        value={amount}
-        onChangeText={setAmount}
-      />
-
-      <TouchableOpacity
-        onPress={() => setShowDatePicker(true)}
-        style={styles.dateButton}
-      >
-        <Text style={styles.dateText}>Select Date: {date.toLocaleDateString()}</Text>
-      </TouchableOpacity>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'inline' : 'default'}
-          onChange={(_, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) setDate(selectedDate);
-          }}
-        />
-      )}
-
-      <TextInput
-        style={styles.input}
-        placeholder="Description (optional)"
-        value={description}
-        onChangeText={setDescription}
-      />
-
-      <View style={styles.toggleContainer}>
-        <TouchableOpacity
-          style={[
-            styles.toggleButton,
-            selectedType === 'income' && styles.selectedButton,
-          ]}
-          onPress={() => setSelectedType('income')}
-        >
-          <Text
-            style={[
-              styles.toggleText,
-              selectedType === 'income' && styles.selectedText,
-            ]}
-          >
-            Income
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: '#f3e8ff' }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+          <Text style={styles.header}>
+            {selectedType === 'income' ? 'Add Income' : 'Add Expense'}
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.toggleButton,
-            selectedType === 'expense' && styles.selectedButton,
-          ]}
-          onPress={() => setSelectedType('expense')}
-        >
-          <Text
-            style={[
-              styles.toggleText,
-              selectedType === 'expense' && styles.selectedText,
-            ]}
-          >
-            Expense
-          </Text>
-        </TouchableOpacity>
-      </View>
 
-      <TouchableOpacity
-        style={[styles.submitButton, { backgroundColor: '#4a148c' }]}
-        onPress={handleAddTransaction}
-      >
-        <Text style={styles.submitText}>Add {selectedType}</Text>
-      </TouchableOpacity>
-    </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Title"
+            value={title}
+            onChangeText={setTitle}
+            placeholderTextColor="#999"
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Amount"
+            keyboardType="numeric"
+            value={amount}
+            onChangeText={setAmount}
+            placeholderTextColor="#999"
+          />
+
+          <TouchableOpacity
+            onPress={() => setShowDatePicker(true)}
+            style={styles.dateButton}
+          >
+            <Text style={styles.dateText}>Date: {date.toLocaleDateString()}</Text>
+          </TouchableOpacity>
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'inline' : 'default'}
+              onChange={(_, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) setDate(selectedDate);
+              }}
+            />
+          )}
+
+          <TextInput
+            style={styles.input}
+            placeholder="Description (optional)"
+            value={description}
+            onChangeText={setDescription}
+            placeholderTextColor="#999"
+          />
+
+          <View style={styles.toggleContainer}>
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                selectedType === 'income' && styles.selectedButton,
+              ]}
+              onPress={() => setSelectedType('income')}
+            >
+              <Text
+                style={[
+                  styles.toggleText,
+                  selectedType === 'income' && styles.selectedText,
+                ]}
+              >
+                Income
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                selectedType === 'expense' && styles.selectedButton,
+              ]}
+              onPress={() => setSelectedType('expense')}
+            >
+              <Text
+                style={[
+                  styles.toggleText,
+                  selectedType === 'expense' && styles.selectedText,
+                ]}
+              >
+                Expense
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.submitButton} onPress={handleAddTransaction}>
+            <Text style={styles.submitText}>Add {selectedType}</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#f3e8ff' },
-  header: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
+  container: {
+    padding: 20,
+    paddingBottom: 100,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#4a148c',
+    marginBottom: 20,
+  },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
     backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginBottom: 15,
+    fontSize: 16,
+    color: '#333',
   },
   dateButton: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: '#e5dbff',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
     marginBottom: 15,
-    backgroundColor: '#f0f0f0',
   },
-  dateText: { color: '#333' },
+  dateText: {
+    fontSize: 16,
+    color: '#333',
+  },
   toggleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
+    gap: 10,
   },
   toggleButton: {
     flex: 1,
+    backgroundColor: '#d1c4e9',
     paddingVertical: 12,
-    marginHorizontal: 5,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#e0d7f5',
+    borderRadius: 10,
     alignItems: 'center',
   },
   selectedButton: {
     backgroundColor: '#4a148c',
-    borderColor: '#4a148c',
   },
   toggleText: {
-    fontSize: 16,
     color: '#333',
+    fontSize: 16,
     fontWeight: '500',
   },
   selectedText: {
@@ -191,13 +212,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   submitButton: {
-    padding: 14,
-    borderRadius: 10,
+    backgroundColor: '#4a148c',
+    paddingVertical: 16,
+    borderRadius: 12,
     alignItems: 'center',
   },
   submitText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
   },
 });

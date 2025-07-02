@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Platform,
 } from 'react-native';
 import WalletCard from './WalletCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -65,23 +66,25 @@ export default function WalletScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      <Text style={styles.title}>Your Wallets</Text>
+
       <WalletCard
         cardNumber="4187 3064 3917 7401"
         cardHolder="Pavan Saketh"
         expiry="05/29"
         balance={balances[0] || 0}
-        brand="Visa" 
+        brand="Visa"
         onMenuPress={() => handleMenuPress(0)}
       />
 
-      <View style={{ height: 20 }} />
+      <View style={{ height: 24 }} />
 
       <WalletCard
         cardNumber="5290 2245 1992 8831"
         cardHolder="Pavan Saketh"
         expiry="06/30"
         balance={balances[1] || 0}
-        brand="MasterCard" 
+        brand="MasterCard"
         onMenuPress={() => handleMenuPress(1)}
       />
 
@@ -97,12 +100,13 @@ export default function WalletScreen() {
               keyboardType="numeric"
               value={amount}
               onChangeText={setAmount}
+              placeholderTextColor="#aaa"
             />
             <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Submit</Text>
+              <Text style={styles.submitText}>Submit</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text style={{ marginTop: 10, color: '#999' }}>Cancel</Text>
+              <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -112,7 +116,18 @@ export default function WalletScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#f3e8ff' },
+  container: {
+    flex: 1,
+    backgroundColor: '#f3e8ff',
+    padding: 20,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#4a148c',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -121,24 +136,46 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 12,
-    width: '80%',
+    padding: 24,
+    borderRadius: 16,
+    width: '85%',
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
     alignItems: 'center',
   },
-  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
   input: {
     width: '100%',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 15,
+    borderColor: '#bbb',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 16,
+    color: '#333',
+    fontSize: 16,
   },
   submitBtn: {
     backgroundColor: '#8854d0',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 26,
+    borderRadius: 10,
+  },
+  submitText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  cancelText: {
+    marginTop: 12,
+    color: '#666',
+    fontSize: 14,
   },
 });

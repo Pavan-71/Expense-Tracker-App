@@ -9,7 +9,7 @@ interface WalletCardProps {
   expiry: string;
   balance: number;
   onMenuPress?: () => void;
-  brand?: 'Visa' | 'MasterCard'; 
+  brand?: 'Visa' | 'MasterCard';
 }
 
 const WalletCard: React.FC<WalletCardProps> = ({
@@ -18,11 +18,11 @@ const WalletCard: React.FC<WalletCardProps> = ({
   expiry,
   balance,
   onMenuPress,
-  brand = 'Visa', 
+  brand = 'Visa',
 }) => {
   return (
     <LinearGradient
-      colors={['#a18cd1', '#fbc2eb']}
+      colors={['#8854d0', '#d8b4fe']}
       style={styles.card}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -31,13 +31,21 @@ const WalletCard: React.FC<WalletCardProps> = ({
         <EllipsisVertical color="#fff" size={20} />
       </TouchableOpacity>
 
-      <Text style={styles.cardNumber}>{cardNumber}</Text>
-      <Text style={styles.cardHolder}>{cardHolder}</Text>
-      <Text style={styles.expiry}>Exp: {expiry}</Text>
+      <View style={styles.content}>
+        <Text style={styles.cardNumber}>{cardNumber}</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>Card Holder</Text>
+          <Text style={styles.value}>{cardHolder}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Expiry</Text>
+          <Text style={styles.value}>{expiry}</Text>
+        </View>
 
-      <View style={styles.balanceSection}>
-        <Text style={styles.balanceLabel}>Total Balance</Text>
-        <Text style={styles.balance}>₹{balance.toLocaleString()}</Text>
+        <View style={styles.balanceSection}>
+          <Text style={styles.balanceLabel}>Available Balance</Text>
+          <Text style={styles.balance}>₹{balance.toLocaleString()}</Text>
+        </View>
       </View>
 
       <Text style={styles.cardBrand}>{brand}</Text>
@@ -50,41 +58,54 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 20,
     padding: 20,
-    position: 'relative',
     overflow: 'hidden',
+    elevation: 5,
+    shadowColor: '#8854d0',
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
   },
   menuIcon: {
     position: 'absolute',
     top: 16,
     right: 16,
+    padding: 4,
+    zIndex: 10,
+  },
+  content: {
+    marginTop: 10,
   },
   cardNumber: {
     color: '#fff',
     fontSize: 18,
     letterSpacing: 2,
-    marginTop: 20,
+    marginBottom: 12,
+    fontWeight: '600',
   },
-  cardHolder: {
-    color: '#fff',
-    fontSize: 16,
-    marginTop: 10,
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
   },
-  expiry: {
-    color: '#fff',
+  label: {
+    color: '#ddd',
     fontSize: 14,
-    marginTop: 5,
+  },
+  value: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '500',
   },
   balanceSection: {
-    marginTop: 30,
-    alignItems: 'flex-start',
+    marginTop: 20,
   },
   balanceLabel: {
-    color: '#fff',
+    color: '#eee',
     fontSize: 14,
   },
   balance: {
     color: '#fff',
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: 'bold',
     marginTop: 4,
   },
@@ -92,11 +113,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 20,
-    color: '#fff',
+    color: '#ffffffcc',
     fontSize: 16,
     fontWeight: '600',
     fontStyle: 'italic',
-    opacity: 0.9,
   },
 });
 

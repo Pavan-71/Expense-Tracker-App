@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 import HomeScreen from './src/HomeScreen';
 import OverviewScreen from './src/OverviewScreen';
@@ -65,36 +66,37 @@ const ProtectedSettings = () => <ProtectedRoute><SettingsScreen /></ProtectedRou
 
 export default function App() {
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <AuthContext.Consumer>
-          {({ user, loading }) =>
-            loading ? null : (
-              <Stack.Navigator initialRouteName={user ? 'Home' : 'Welcome'}>
-              
-                <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
-                <Stack.Screen name="Signup" component={SignupScreen} options={{ title: 'Sign Up' }} />
+    <PaperProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <AuthContext.Consumer>
+            {({ user, loading }) =>
+              loading ? null : (
+                <Stack.Navigator initialRouteName={user ? 'Home' : 'Welcome'}>
+                  <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
+                  <Stack.Screen name="Signup" component={SignupScreen} options={{ title: 'Sign Up' }} />
 
-                <Stack.Screen name="Home" component={ProtectedHome} options={{ headerShown: false }} />
-                <Stack.Screen name="Overview" component={ProtectedOverview} options={{ title: 'Overview' }} />
-                <Stack.Screen name="AddTransaction" component={ProtectedAddTransaction} options={{ title: 'Log Transactions' }} />
-                <Stack.Screen name="AddForm" component={ProtectedAddForm} options={{ title: 'Add Details' }} />
-                <Stack.Screen name="Notification" component={ProtectedNotification} options={{ title: 'Tips & Suggestions' }} />
-                <Stack.Screen name="NotificationDetail" component={ProtectedNotificationDetail} options={{ title: 'Details' }} />
-                <Stack.Screen name="Wallet" component={ProtectedWallet} options={{ title: 'Wallet' }} />
-                <Stack.Screen name="Logs" component={ProtectedLogs} options={{ title: 'Transaction Logs' }} />
-                <Stack.Screen name="About" component={ProtectedAbout} options={{ title: 'About App' }} />
-                <Stack.Screen name="Profile" component={ProtectedProfile} options={{ title: 'Your Profile' }} />
-                <Stack.Screen name="Help" component={ProtectedHelp} options={{ title: 'Help & FAQs' }} />
-                <Stack.Screen name="Terms" component={ProtectedTerms} options={{ title: 'Terms & Conditions' }} />
-                <Stack.Screen name="Privacy" component={ProtectedPrivacy} options={{ title: 'Privacy Policy' }} />
-                <Stack.Screen name="Settings" component={ProtectedSettings} options={{ title: 'Settings' }} />
-              </Stack.Navigator>
-            )
-          }
-        </AuthContext.Consumer>
-      </NavigationContainer>
-    </AuthProvider>
+                  <Stack.Screen name="Home" component={ProtectedHome} options={{ headerShown: false }} />
+                  <Stack.Screen name="Overview" component={ProtectedOverview} options={{ title: 'Overview' }} />
+                  <Stack.Screen name="AddTransaction" component={ProtectedAddTransaction} options={{ title: 'Log Transactions' }} />
+                  <Stack.Screen name="AddForm" component={ProtectedAddForm} options={{ title: 'Add Details' }} />
+                  <Stack.Screen name="Notification" component={ProtectedNotification} options={{ title: 'Tips & Suggestions' }} />
+                  <Stack.Screen name="NotificationDetail" component={ProtectedNotificationDetail} options={{ title: 'Details' }} />
+                  <Stack.Screen name="Wallet" component={ProtectedWallet} options={{ title: 'Wallet' }} />
+                  <Stack.Screen name="Logs" component={ProtectedLogs} options={{ title: 'Transaction Logs' }} />
+                  <Stack.Screen name="About" component={ProtectedAbout} options={{ title: 'About App' }} />
+                  <Stack.Screen name="Profile" component={ProtectedProfile} options={{ title: 'Your Profile' }} />
+                  <Stack.Screen name="Help" component={ProtectedHelp} options={{ title: 'Help & FAQs' }} />
+                  <Stack.Screen name="Terms" component={ProtectedTerms} options={{ title: 'Terms & Conditions' }} />
+                  <Stack.Screen name="Privacy" component={ProtectedPrivacy} options={{ title: 'Privacy Policy' }} />
+                  <Stack.Screen name="Settings" component={ProtectedSettings} options={{ title: 'Settings' }} />
+                </Stack.Navigator>
+              )
+            }
+          </AuthContext.Consumer>
+        </NavigationContainer>
+      </AuthProvider>
+    </PaperProvider>
   );
 }

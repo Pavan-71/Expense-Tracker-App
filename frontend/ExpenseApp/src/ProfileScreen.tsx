@@ -48,37 +48,59 @@ const ProfileScreen = () => {
         </Text>
       </View>
 
-      <View style={styles.divider} />
+      <Text style={styles.sectionTitle}>Account Options</Text>
 
       <View style={styles.optionsWrapper}>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Terms')}>
-          <Ionicons name="document-text-outline" size={18} color="#4a148c" />
-          <Text style={styles.optionText}>Terms & Conditions</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Help')}>
-          <Ionicons name="help-circle-outline" size={18} color="#4a148c" />
-          <Text style={styles.optionText}>Help & FAQs</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Privacy')}>
-          <Ionicons name="lock-closed-outline" size={18} color="#4a148c" />
-          <Text style={styles.optionText}>Privacy Policy</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Settings')}>
-          <Ionicons name="settings-outline" size={18} color="#4a148c" />
-          <Text style={styles.optionText}>Settings</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.option, styles.logoutButton]}
+        <ProfileOption
+          icon="document-text-outline"
+          text="Terms & Conditions"
+          onPress={() => navigation.navigate('Terms')}
+        />
+        <ProfileOption
+          icon="help-circle-outline"
+          text="Help & FAQs"
+          onPress={() => navigation.navigate('Help')}
+        />
+        <ProfileOption
+          icon="lock-closed-outline"
+          text="Privacy Policy"
+          onPress={() => navigation.navigate('Privacy')}
+        />
+        <ProfileOption
+          icon="settings-outline"
+          text="Settings"
+          onPress={() => navigation.navigate('Settings')}
+        />
+        <ProfileOption
+          icon="log-out-outline"
+          text="Logout"
           onPress={handleLogout}
-        >
-          <Ionicons name="log-out-outline" size={18} color="#b91c1c" />
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+          isLogout
+        />
       </View>
     </ScrollView>
   );
 };
+
+const ProfileOption = ({
+  icon,
+  text,
+  onPress,
+  isLogout,
+}: {
+  icon: string;
+  text: string;
+  onPress: () => void;
+  isLogout?: boolean;
+}) => (
+  <TouchableOpacity
+    style={[styles.option, isLogout && styles.logoutButton]}
+    onPress={onPress}
+  >
+    <Ionicons name={icon} size={20} color={isLogout ? '#b91c1c' : '#4a148c'} />
+    <Text style={[styles.optionText, isLogout && styles.logoutText]}>{text}</Text>
+  </TouchableOpacity>
+);
 
 export default ProfileScreen;
 
@@ -91,15 +113,12 @@ const styles = StyleSheet.create({
   },
   profileCard: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 16,
     width: '100%',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    elevation: 4,
   },
   avatar: {
     width: 90,
@@ -131,11 +150,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#6a1b9a',
   },
-  divider: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#ccc',
-    marginVertical: 20,
+  sectionTitle: {
+    alignSelf: 'flex-start',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#4a148c',
+    marginBottom: 12,
   },
   optionsWrapper: {
     width: '100%',
@@ -149,7 +169,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 12,
     elevation: 2,
-    gap: 10,
+    gap: 12,
   },
   optionText: {
     fontSize: 16,
@@ -159,7 +179,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fee2e2',
   },
   logoutText: {
-    fontSize: 16,
     color: '#b91c1c',
+    fontWeight: 'bold',
   },
 });

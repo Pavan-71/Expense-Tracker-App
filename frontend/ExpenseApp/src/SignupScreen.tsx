@@ -1,5 +1,15 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { AuthContext } from './context/AuthContext';
@@ -13,7 +23,6 @@ export default function SignupScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-
   const { login } = useContext(AuthContext);
 
   const handleSignup = async () => {
@@ -36,45 +45,89 @@ export default function SignupScreen({ navigation }: Props) {
     }
   };
 
+  const isFormValid = username && email && password;
+
   return (
     <LinearGradient colors={['#f3e8ff', '#d1b3ff']} style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-        <View style={styles.card}>
-          <Text style={styles.title}>Create Account</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.card}>
+            <Text style={styles.title}>Create Account</Text>
 
-          <View style={styles.inputContainer}>
-            <Icon name="user" size={20} color="#6a1b9a" />
-            <TextInput placeholder="Username" style={styles.input} onChangeText={setUsername} value={username} />
+            <View style={styles.inputContainer}>
+              <Icon name="user" size={20} color="#6a1b9a" />
+              <TextInput
+                placeholder="Username"
+                style={styles.input}
+                onChangeText={setUsername}
+                value={username}
+                placeholderTextColor="#888"
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Icon name="mail" size={20} color="#6a1b9a" />
+              <TextInput
+                placeholder="Email"
+                style={styles.input}
+                onChangeText={setEmail}
+                value={email}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                placeholderTextColor="#888"
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Icon name="phone" size={20} color="#6a1b9a" />
+              <TextInput
+                placeholder="Phone"
+                style={styles.input}
+                onChangeText={setPhone}
+                value={phone}
+                keyboardType="phone-pad"
+                placeholderTextColor="#888"
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Icon name="lock" size={20} color="#6a1b9a" />
+              <TextInput
+                placeholder="Password"
+                secureTextEntry
+                style={styles.input}
+                onChangeText={setPassword}
+                value={password}
+                placeholderTextColor="#888"
+              />
+            </View>
+
+            <TouchableOpacity
+              style={[
+                styles.signupButton,
+                !isFormValid && { opacity: 0.5 },
+              ]}
+              onPress={handleSignup}
+              disabled={!isFormValid}
+            >
+              <Text style={styles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
+
+            <Text
+              style={styles.link}
+              onPress={() => navigation.replace('Login')}
+            >
+              Already have an account? Login
+            </Text>
           </View>
-
-          <View style={styles.inputContainer}>
-            <Icon name="mail" size={20} color="#6a1b9a" />
-            <TextInput placeholder="Email" style={styles.input} onChangeText={setEmail} value={email} />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Icon name="phone" size={20} color="#6a1b9a" />
-            <TextInput placeholder="Phone" style={styles.input} onChangeText={setPhone} value={phone} keyboardType="phone-pad" />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Icon name="lock" size={20} color="#6a1b9a" />
-            <TextInput placeholder="Password" style={styles.input} secureTextEntry onChangeText={setPassword} value={password} />
-          </View>
-
-          <TouchableOpacity
-            style={[styles.signupButton, !(username && email && password) && { opacity: 0.5 }]}
-            onPress={handleSignup}
-            disabled={!username || !email || !password}
-          >
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.link} onPress={() => navigation.replace('Login')}>
-            Already have an account? Login
-          </Text>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </LinearGradient>
   );
 }
@@ -85,22 +138,22 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'flex-start',
-    padding: 20,
-    paddingTop: 80,
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 60,
   },
   card: {
     backgroundColor: '#fff',
-    padding: 24,
-    borderRadius: 16,
+    padding: 26,
+    borderRadius: 18,
     elevation: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     textAlign: 'center',
     marginBottom: 24,
     color: '#6a1b9a',
@@ -113,20 +166,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 12,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#e0d7f5',
   },
   input: {
     flex: 1,
     padding: 12,
     fontSize: 16,
-    fontFamily: 'Montserrat',
     color: '#333',
+    fontFamily: 'Montserrat',
   },
   signupButton: {
     backgroundColor: '#6a1b9a',
     paddingVertical: 14,
     borderRadius: 10,
-    marginTop: 10,
     alignItems: 'center',
+    marginTop: 12,
   },
   buttonText: {
     color: '#fff',

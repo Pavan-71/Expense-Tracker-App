@@ -1,11 +1,36 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+// Enable LayoutAnimation on Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 export default function AboutScreen() {
+  useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.card}>
+        {/* App logo or avatar */}
+        <Image
+          source={require('../assets/logo.png')} // Replace with your actual logo path
+          style={styles.logo}
+        />
+
+        {/* Title */}
         <View style={styles.headerRow}>
           <Ionicons name="cash-outline" size={26} color="#6a1b9a" />
           <Text style={styles.title}>Expense Tracker</Text>
@@ -20,6 +45,7 @@ export default function AboutScreen() {
           visualize summaries with charts, and manage your finances effortlessly.
         </Text>
 
+        {/* Tech Stack Section */}
         <View style={styles.headerRow}>
           <Ionicons name="rocket-outline" size={22} color="#6a1b9a" />
           <Text style={styles.sectionTitle}>Tech Stack</Text>
@@ -68,6 +94,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignSelf: 'center',
+    marginBottom: 16,
   },
   headerRow: {
     flexDirection: 'row',
